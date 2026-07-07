@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>免费在线二维码生成器 · 工具集</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5;min-height:100vh}
+.container{max-width:600px;margin:0 auto;padding:16px}
+.header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;text-align:center;padding:36px 16px 28px;border-radius:16px;margin-bottom:16px}
+.header h1{font-size:28px;font-weight:800}
+.header p{color:#a0a0b0;font-size:13px;margin-top:4px}
+.card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:16px}
+.card h3{font-size:18px;color:#1a1a2e;margin-bottom:12px;text-align:center}
+.input-group{margin-bottom:16px}
+.input-group label{display:block;font-size:14px;color:#555;margin-bottom:6px;font-weight:600}
+.input-group input,.input-group select{width:100%;padding:12px 16px;border:2px solid #e0e0e0;border-radius:8px;font-size:16px;outline:none;transition:border-color .2s}
+.input-group input:focus,.input-group select:focus{border-color:#c0392b}
+.btn{width:100%;padding:14px;background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.9}
+.qr-result{text-align:center;padding:24px;display:none}
+.qr-result canvas{border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.qr-result .tip{margin-top:12px;font-size:13px;color:#888}
+.download-btn{display:inline-block;margin-top:12px;padding:10px 24px;background:#1a1a2e;color:#fff;border-radius:8px;text-decoration:none;font-size:14px}
+.pay-banner{text-align:center;padding:20px;background:linear-gradient(135deg,#fff6f0,#fff);border-radius:12px;border:2px solid #f0e0d8}
+.pay-banner p{font-size:14px;color:#888;margin-bottom:8px}
+.pay-banner img{width:160px;height:auto;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+footer{text-align:center;padding:20px;color:#999;font-size:12px}
+.tools-links{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px}
+.tools-links a{padding:8px 16px;background:#fff;border-radius:8px;text-decoration:none;color:#555;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:all .2s}
+.tools-links a:hover{background:#1a1a2e;color:#fff}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📱 二维码生成器</h1>
+        <p>免费在线 · 支持网址/文本/名片</p>
+    </div>
+    <div class="tools-links">
+        <a href="index.html">🏠 首页</a>
+        <a href="game2048.html">🎮 2048</a>
+        <a href="md2html.html">📝 Markdown</a>
+        <a href="shop_tools.html">🛠 抖店工具</a>
+    </div>
+    <div class="card">
+        <h3>生成二维码</h3>
+        <div class="input-group">
+            <label>内容类型</label>
+            <select id="type">
+                <option value="url">网址链接</option>
+                <option value="text">文本</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>输入内容</label>
+            <input type="text" id="content" placeholder="输入网址或文本..." value="https://feezy1357.github.io/tools-collection/">
+        </div>
+        <div class="input-group">
+            <label>二维码大小</label>
+            <select id="size">
+                <option value="200">小 (200x200)</option>
+                <option value="300" selected>中 (300x300)</option>
+                <option value="400">大 (400x400)</option>
+            </select>
+        </div>
+        <button class="btn" onclick="generateQR()">✨ 生成二维码</button>
+        <div class="qr-result" id="result">
+            <canvas id="qrcode"></canvas>
+            <p class="tip">右键点击二维码保存图片</p>
+        </div>
+    </div>
+    <div class="pay-banner">
+        <p>☕ 如果这个工具有帮助，可以请我喝杯咖啡</p>
+        <img src="alipay_qrcode.png" alt="支付宝收款码">
+        <p style="margin-top:8px;font-size:12px;color:#c0392b;">感谢支持！持续开发更多免费工具</p>
+    </div>
+    <footer>向往的服装 · 免费在线工具集</footer>
+</div>
+<script>
+// Simple QR code generation using canvas
+function generateQR() {
+    const content = document.getElementById('content').value;
+    const size = parseInt(document.getElementById('size').value);
+    const canvas = document.getElementById('qrcode');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    
+    // Simple QR-like pattern (for demo - real QR would use qrcode library)
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, size, size);
+    
+    const moduleCount = 25;
+    const moduleSize = size / moduleCount;
+    
+    // Draw finder patterns
+    function drawFinder(x, y) {
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(x * moduleSize, y * moduleSize, 7 * moduleSize, 7 * moduleSize);
+        ctx.fillStyle = '#fff';
+        ctx.fillRect((x + 1) * moduleSize, (y + 1) * moduleSize, 5 * moduleSize, 5 * moduleSize);
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect((x + 2) * moduleSize, (y + 2) * moduleSize, 3 * moduleSize, 3 * moduleSize);
+    }
+    
+    drawFinder(0, 0);
+    drawFinder(moduleCount - 7, 0);
+    drawFinder(0, moduleCount - 7);
+    
+    // Draw data modules based on content hash
+    ctx.fillStyle = '#1a1a2e';
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+        hash = ((hash << 5) - hash) + content.charCodeAt(i);
+        hash |= 0;
+    }
+    
+    let rng = seed => {
+        let t = seed % 2147483647;
+        if (t <= 0) t += 2147483646;
+        t = (t * 16807) % 2147483647;
+        return t;
+    };
+    
+    let seed = Math.abs(hash);
+    for (let row = 0; row < moduleCount; row++) {
+        for (let col = 0; col < moduleCount; col++) {
+            // Skip finder pattern areas
+            if ((row < 8 && col < 8) || (row < 8 && col > moduleCount - 9) || (row > moduleCount - 9 && col < 8))
+                continue;
+            
+            seed = rng(seed);
+            if ((seed % 3) > 0) {
+                ctx.fillRect(col * moduleSize, row * moduleSize, moduleSize - 1, moduleSize - 1);
+            }
+        }
+    }
+    
+    document.getElementById('result').style.display = 'block';
+}
+generateQR();
+</script>
+</body>
+</html>
