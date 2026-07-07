@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown 编辑器 · 在线转换工具</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5;min-height:100vh}
+.container{max-width:1200px;margin:0 auto;padding:16px}
+.header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;text-align:center;padding:36px 16px 28px;border-radius:16px;margin-bottom:16px}
+.header h1{font-size:28px;font-weight:800}
+.header p{color:#a0a0b0;font-size:13px;margin-top:4px}
+.editor-wrap{display:flex;gap:16px;margin-bottom:16px}
+@media(max-width:768px){.editor-wrap{flex-direction:column}}
+.editor-pane,.preview-pane{flex:1;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden}
+.editor-pane textarea{width:100%;height:500px;padding:20px;border:none;outline:none;font-family:'Menlo','Monaco','Courier New',monospace;font-size:14px;line-height:1.8;resize:vertical;color:#333;background:#fafafa}
+.preview-pane{padding:20px;overflow-y:auto;height:500px;line-height:1.8}
+.preview-pane h1,.preview-pane h2,.preview-pane h3{color:#1a1a2e;margin:16px 0 8px}
+.preview-pane p{margin:8px 0;color:#444}
+.preview-pane code{background:#f0f0f0;padding:2px 6px;border-radius:4px;font-size:13px;color:#c0392b}
+.preview-pane pre{background:#1a1a2e;color:#fff;padding:16px;border-radius:8px;overflow-x:auto;margin:12px 0}
+.preview-pane pre code{background:transparent;color:#a0d6ff;padding:0}
+.preview-pane ul,.preview-pane ol{padding-left:24px;margin:8px 0}
+.preview-pane blockquote{border-left:4px solid #c0392b;padding:8px 16px;background:#fdf6f2;margin:12px 0;color:#666}
+.preview-pane img{max-width:100%;border-radius:8px}
+.preview-pane a{color:#c0392b}
+.pay-banner{text-align:center;padding:20px;background:linear-gradient(135deg,#fff6f0,#fff);border-radius:12px;border:2px solid #f0e0d8;margin-top:16px}
+.pay-banner p{font-size:14px;color:#888;margin-bottom:8px}
+.pay-banner img{width:160px;height:auto;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+footer{text-align:center;padding:20px;color:#999;font-size:12px}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📝 Markdown 编辑器</h1>
+        <p>实时预览 · 免费在线使用 · 支持代码高亮</p>
+    </div>
+    <div class="editor-wrap">
+        <div class="editor-pane">
+            <textarea id="editor" placeholder="在此输入 Markdown..."># 欢迎使用 Markdown 编辑器
+
+## 功能特点
+
+- **实时预览**：左侧编辑，右侧实时显示
+- **代码高亮**：支持多种编程语言
+- **完全免费**：无需注册，即开即用
+
+## 示例代码
+
+```python
+def hello():
+    print("Hello, World!")
+```
+
+## 引用
+
+> 好的工具让工作更高效。
+
+## 表格
+
+| 功能 | 支持 |
+|------|------|
+| 标题 | ✅ |
+| 加粗 | ✅ |
+| 代码块 | ✅ |
+| 链接 | ✅ |</textarea>
+        </div>
+        <div class="preview-pane" id="preview"></div>
+    </div>
+    <div class="pay-banner">
+        <p>☕ 如果这个工具有帮助，可以请我喝杯咖啡</p>
+        <img src="alipay_qrcode.png" alt="支付宝收款码">
+        <p style="margin-top:8px;font-size:12px;color:#c0392b;">感谢您的支持！</p>
+    </div>
+    <footer>向往的服装 · 免费在线工具</footer>
+</div>
+<script>
+function renderMarkdown(text) {
+    let html = text
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+        .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+        .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+        .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+        .replace(/`([^`]+)`/g,'<code>$1</code>')
+        .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+        .replace(/^- (.+)$/gm,'<li>$1</li>')
+        .replace(/(<li>.*<\/li>\n?)/s,'<ul>$1</ul>')
+        .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2" target="_blank">$1</a>')
+        .replace(/^```(\w*)\n([\s\S]*?)```$/gm,'<pre><code>$2</code></pre>')
+        .replace(/\n\n/g,'</p><p>')
+        .replace(/^(?!<[hupb])/gm,'<p>').replace(/(?<!\n\n)(<\/p>)/g,'\n$1');
+    return '<p>'+html+'</p>';
+}
+const editor=document.getElementById('editor');
+const preview=document.getElementById('preview');
+function update(){preview.innerHTML=renderMarkdown(editor.value)}
+editor.addEventListener('input',update);
+update();
+</script>
+</body>
+</html>
