@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>抖店运营工具箱 · 向往的服装</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:linear-gradient(135deg,#f0f4f8,#e2e8f0);
+    min-height:100vh;
+}
+.container{max-width:500px;margin:0 auto;padding:0 12px 40px}
+.header{
+    background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;
+    text-align:center;padding:32px 16px 24px;
+    border-radius:0 0 24px 24px;margin:0 -12px 16px;
+}
+.header h1{font-size:26px;font-weight:800}
+.header p{color:#a0a0b0;font-size:13px;margin-top:4px}
+.nav-tabs{
+    display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+}
+.nav-tab{
+    flex-shrink:0;padding:10px 18px;border-radius:10px;border:0;
+    font-size:14px;font-weight:600;cursor:pointer;
+    background:#e2e8f0;color:#64748b;transition:all .2s;
+}
+.nav-tab.active{background:#1a1a2e;color:#fff}
+.nav-tab:active{transform:scale(.96)}
+.tool-panel{display:none}
+.tool-panel.active{display:block}
+.card{
+    background:#fff;border-radius:16px;padding:20px;margin-bottom:14px;
+    box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+.card h3{font-size:17px;color:#1a1a2e;margin-bottom:4px}
+.card .desc{font-size:13px;color:#888;margin-bottom:12px}
+.card textarea{
+    width:100%;min-height:80px;padding:12px;
+    border:1px solid #ddd;border-radius:10px;font-size:14px;
+    resize:vertical;font-family:inherit;
+}
+.card textarea:focus{outline:0;border-color:#1a1a2e}
+.card .btn{
+    padding:10px 24px;border:0;border-radius:10px;font-size:14px;font-weight:700;
+    cursor:pointer;margin-top:8px;transition:all .15s;
+}
+.card .btn:active{transform:scale(.96)}
+.btn-primary{background:#1a1a2e;color:#fff}
+.btn-primary:hover{background:#2a2a3e}
+.btn-gold{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.result-box{
+    margin-top:12px;padding:14px;background:#f8fafc;
+    border-radius:10px;border:1px solid #e2e8f0;
+    font-size:14px;line-height:1.7;white-space:pre-wrap;min-height:50px;
+}
+.result-box .empty{color:#94a3b8;font-size:13px}
+.copy-btn{
+    display:none;margin-top:8px;padding:6px 16px;border:0;
+    border-radius:6px;background:#e2e8f0;color:#475569;
+    font-size:12px;cursor:pointer;
+}
+.copy-btn.show{display:inline-block}
+/* Paywall overlay */
+.paywall-overlay{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
+    z-index:1000;align-items:center;justify-content:center;padding:20px;
+}
+.paywall-overlay.show{display:flex}
+.paywall-card{
+    background:#fff;border-radius:20px;padding:28px 24px;
+    max-width:360px;width:100%;text-align:center;
+    animation:slideUp .3s ease;
+}
+@keyframes slideUp{0%{transform:translateY(40px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.paywall-card h3{font-size:20px;color:#1a1a2e;margin-bottom:6px}
+.paywall-card .price{font-size:36px;font-weight:900;color:#c0392b;margin:10px 0}
+.paywall-card .price span{font-size:18px}
+.paywall-card img{width:200px;height:auto;border-radius:12px;margin:12px 0}
+.paywall-card .tip{font-size:13px;color:#999;margin-bottom:12px}
+.paywall-card .btn-close{
+    padding:8px 24px;border:0;border-radius:8px;background:#e2e8f0;
+    color:#64748b;font-size:14px;cursor:pointer;
+}
+.pay-section{
+    text-align:center;padding:20px;margin:16px 0;
+    background:linear-gradient(135deg,#fff6f0,#fff);
+    border-radius:16px;border:2px solid #f0e0d8;
+}
+.pay-section h3{font-size:19px;color:#c0392b}
+.pay-section .sub{color:#999;font-size:13px;margin-bottom:12px}
+.pay-section img{width:180px;height:auto;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+.pay-section .tip{font-size:12px;color:#c0392b;margin-top:8px}
+footer{text-align:center;padding:20px;color:#999;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🛠 抖店运营工具箱</h1>
+        <p>免费电商工具 · 助力抖店卖家</p>
+    </div>
+
+    <div class="nav-tabs" id="navTabs">
+        <button class="nav-tab active" data-tab="tab-title">📝 标题生成</button>
+        <button class="nav-tab" data-tab="tab-desc">📋 描述生成</button>
+        <button class="nav-tab" data-tab="tab-wash">🏷 水洗标</button>
+        <button class="nav-tab" data-tab="tab-seo">🔍 SEO优化</button>
+    </div>
+
+    <!-- Tab 1: Title Generator -->
+    <div class="tool-panel active" id="tab-title">
+        <div class="card">
+            <h3>📝 商品标题生成器</h3>
+            <p class="desc">输入关键词，自动生成10个爆款标题，提升搜索曝光</p>
+            <textarea id="titleKw" placeholder="输入关键词，如：纯棉T恤 夏季 男 宽松">纯棉T恤 夏季 男 宽松</textarea>
+            <button class="btn btn-primary" onclick="genTitles()">✨ 生成10个标题</button>
+            <div class="result-box" id="titleResult"><span class="empty">点击按钮生成标题 ✨</span></div>
+            <button class="copy-btn" id="copyTitle" onclick="copyText('titleResult','copyTitle')">📋 复制全部</button>
+        </div>
+    </div>
+
+    <!-- Tab 2: Description Generator -->
+    <div class="tool-panel" id="tab-desc">
+        <div class="card">
+            <h3>📋 商品描述生成器</h3>
+            <p class="desc">生成专业、有转化力的商品详情描述</p>
+            <textarea id="descKw" placeholder="简单描述商品，如：圆领T恤 220g 纯棉 男女同款">圆领T恤 220g 纯棉 男女同款</textarea>
+            <button class="btn btn-primary" onclick="genDescs()">✨ 生成描述</button>
+            <div class="result-box" id="descResult"><span class="empty">点击按钮生成描述 ✨</span></div>
+            <button class="copy-btn" id="copyDesc" onclick="copyText('descResult','copyDesc')">📋 复制</button>
+        </div>
+    </div>
+
+    <!-- Tab 3: Wash Label Generator -->
+    <div class="tool-panel" id="tab-wash">
+        <div class="card">
+            <h3>🏷 水洗标模板生成器</h3>
+            <p class="desc">生成符合国家标准的水洗标内容</p>
+            <select id="fabricType" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font-size:14px;margin-bottom:10px;">
+                <option value="棉">纯棉 (Cotton)</option>
+                <option value="涤纶">涤纶 (Polyester)</option>
+                <option value="混纺" selected>混纺 (Blend)</option>
+                <option value="丝绸">丝绸 (Silk)</option>
+                <option value="羊毛">羊毛 (Wool)</option>
+                <option value="麻">麻 (Linen)</option>
+            </select>
+            <button class="btn btn-primary" onclick="genWashLabel()">✨ 生成水洗标</button>
+            <div class="result-box" id="washResult"><span class="empty">选择面料类型后点击生成 ✨</span></div>
+            <button class="copy-btn" id="copyWash" onclick="copyText('washResult','copyWash')">📋 复制</button>
+        </div>
+    </div>
+
+    <!-- Tab 4: SEO Optimizer -->
+    <div class="tool-panel" id="tab-seo">
+        <div class="card">
+            <h3>🔍 商品SEO优化建议</h3>
+            <p class="desc">输入商品信息，获取SEO优化建议</p>
+            <textarea id="seoInput" placeholder="输入商品名称和描述...">纯棉圆领T恤，220g重磅面料，男女同款，黑白灰三色可选</textarea>
+            <button class="btn btn-primary" onclick="genSEO()">✨ 优化建议</button>
+            <div class="result-box" id="seoResult"><span class="empty">点击获取SEO优化建议 ✨</span></div>
+            <button class="copy-btn" id="copySEO" onclick="copyText('seoResult','copySEO')">📋 复制</button>
+        </div>
+    </div>
+
+    <!-- Pay Section -->
+    <div class="pay-section">
+        <h3>☕ 如果工具帮到了你</h3>
+        <p class="sub">请作者喝杯咖啡吧</p>
+        <img src="alipay_qrcode.png" alt="支付宝收款码">
+        <p class="tip">📱 长按识别 · 随意赞赏</p>
+    </div>
+
+    <footer>
+        <p>© 2026 向往的服装 · 免费电商工具</p>
+        <p style="margin-top:4px;">🛒 抖店：向往的服装</p>
+    </footer>
+</div>
+
+<!-- Paywall Modal -->
+<div class="paywall-overlay" id="paywall">
+    <div class="paywall-card">
+        <h3>🌟 解锁全部功能</h3>
+        <p style="color:#666;font-size:14px;">赞助后即可无限使用所有高级功能</p>
+        <div class="price"><span>¥</span>9.9</div>
+        <p style="color:#999;font-size:13px;">一杯咖啡的价格 · 永久使用</p>
+        <img src="alipay_qrcode.png" alt="收款码">
+        <p class="tip">长按识别支付后刷新页面即可</p>
+        <button class="btn-close" onclick="document.getElementById('paywall').classList.remove('show')">稍后再说</button>
+    </div>
+</div>
+
+<script>
+// Tab switching
+document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+});
+
+// Copy function
+function copyText(resultId, btnId) {
+    const text = document.getElementById(resultId).textContent;
+    if (!text || text.includes('点击按钮') || text.includes('选择面料')) return;
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById(btnId);
+        const orig = btn.textContent;
+        btn.textContent = '✅ 已复制！';
+        setTimeout(() => btn.textContent = orig, 1500);
+    });
+}
+
+// Title Generator
+const titleTemplates = [
+    (kw) => `2024新款${kw}，百搭舒适不挑人，潮人必备`,
+    (kw) => `爆款推荐！${kw}，穿过都说好，回购率99%`,
+    (kw) => `高品质${kw}，匠心工艺，细节见品质，送人也体面`,
+    (kw) => `${kw}限时特惠，买一送一，速来抢购手慢无`,
+    (kw) => `明星同款${kw}，时尚潮流，出街必备回头率超高`,
+    (kw) => `超值${kw}，柔软透气亲肤，夏日清凉首选`,
+    (kw) => `口碑爆棚${kw}，月销10万+，买了都说值`,
+    (kw) => `轻奢${kw}，简约不简单，穿出高级感，气质拉满`,
+    (kw) => `${kw}大促直降，错过等一年，赶紧入手`,
+    (kw) => `闺蜜推荐${kw}，太好穿了！无限回购款`,
+];
+
+function genTitles() {
+    const kw = document.getElementById('titleKw').value.trim() || '纯棉T恤';
+    const shuffled = [...titleTemplates].sort(() => Math.random() - 0.5);
+    const result = shuffled.map((t,i) => `${i+1}. ${t(kw)}`).join('\n\n');
+    document.getElementById('titleResult').innerHTML = result;
+    document.getElementById('copyTitle').classList.add('show');
+}
+
+// Description Generator
+const descTemplates = [
+    (kw) => `📌 商品详情\n\n🌟 【面料特性】\n精选优质面料，手感柔软舒适，亲肤透气\n精湛工艺，细节处理到位，耐穿不易变形\n\n👔 【版型设计】\n版型设计考究，显瘦百搭\n宽松舒适，不挑身材\n\n🎨 【颜色选择】\n多色可选，满足不同搭配需求\n经典百搭色系，怎么穿都好看\n\n📏 【尺码建议】\n标准尺码，按平时穿着尺码选购\n如有疑问可咨询客服\n\n💝 【温馨提示】\n因显示器不同，颜色可能存在轻微差异，以实物为准\n支持7天无理由退换货`,
+    (kw) => `🔥 为什么选择我们？\n\n✅ 品质保证：严选面料，每一件都经过严格质检\n✅ 做工精细：走线工整，包边处理，不易变形脱线\n✅ 舒适体验：透气亲肤，穿着无束缚感，整天舒适\n✅ 时尚百搭：简约设计，各种场合都能驾驭\n✅ 售后无忧：7天无理由退换，放心购买\n\n💰 限时优惠：\n买2件减10元\n买3件减20元\n多买多优惠！\n\n🚚 快递说明：\n48小时发货，全国包邮\n部分地区次日达`,
+    (kw) => `💥 限时特惠 · 品质之选\n\n━━━━━━━━━━━━━━━\n\n✨ 产品亮点\n\n🔹 甄选面料：精选高品质面料，柔软亲肤\n🔹 精湛工艺：每一针每一线都精益求精\n🔹 舒适版型：人体工学剪裁，穿着自在\n🔹 百搭设计：简约不简单，轻松搭配\n\n━━━━━━━━━━━━━━━\n\n💪 品质承诺\n\n✔️ 7天无理由退换\n✔️ 48小时极速发货\n✔️ 全国包邮\n✔️ 品质保证\n\n━━━━━━━━━━━━━━━\n\n🎁 限时活动\n\n买2件减10元\n买3件减20元\n\n👉 点击立即购买，品质生活从这一刻开始`,
+];
+
+function genDescs() {
+    const kw = document.getElementById('descKw').value || '圆领T恤';
+    const idx = Math.floor(Math.random() * descTemplates.length);
+    const result = descTemplates[idx](kw);
+    document.getElementById('descResult').innerHTML = result;
+    document.getElementById('copyDesc').classList.add('show');
+}
+
+// Wash Label Generator
+function genWashLabel() {
+    const fabric = document.getElementById('fabricType').value;
+    const labels = {
+        '棉': `【水洗标】\n━━━━━━━━━━━\n\n面料成分：100%棉\n里料成分：100%棉\n\n洗涤说明：\n🟢 最高洗涤温度30℃ 缓和洗涤\n🟢 不可漂白\n🟢 悬挂晾干\n🟢 熨斗底板最高温度110℃\n🟢 不可干洗\n🟢 不可转笼干燥\n\n执行标准：GB/T 22849-2014\n安全类别：GB 18401-2010 B类\n\n━━━━━━━━━━━`,
+        '涤纶': `【水洗标】\n━━━━━━━━━━━\n\n面料成分：100%聚酯纤维\n里料成分：100%聚酯纤维\n\n洗涤说明：\n🟢 最高洗涤温度30℃ 缓和洗涤\n🟢 不可漂白\n🟢 悬挂晾干\n🟢 熨斗底板最高温度110℃\n🟢 不可干洗\n🟢 不可转笼干燥\n\n执行标准：GB/T 22849-2014\n安全类别：GB 18401-2010 B类\n\n━━━━━━━━━━━`,
+        '混纺': `【水洗标】\n━━━━━━━━━━━\n\n面料成分：60%棉 40%聚酯纤维\n里料成分：100%聚酯纤维\n\n洗涤说明：\n🟢 最高洗涤温度30℃ 缓和洗涤\n🟢 不可漂白\n🟢 悬挂晾干\n🟢 熨斗底板最高温度110℃\n🟢 不可干洗\n🟢 不可转笼干燥\n\n执行标准：GB/T 22849-2014\n安全类别：GB 18401-2010 B类\n\n━━━━━━━━━━━`,
+        '丝绸': `【水洗标】\n━━━━━━━━━━━\n\n面料成分：100%桑蚕丝\n里料成分：100%桑蚕丝\n\n洗涤说明：\n🟢 最高洗涤温度30℃ 缓和洗涤\n🟢 不可漂白\n🟢 阴凉处悬挂晾干\n🟢 熨斗底板最高温度110℃\n🟢 不可干洗\n🟢 不可转笼干燥\n\n执行标准：GB/T 18132-2014\n安全类别：GB 18401-2010 B类\n\n━━━━━━━━━━━`,
+        '羊毛': `【水洗标】\n━━━━━━━━━━━\n\n面料成分：100%羊毛\n里料成分：100%聚酯纤维\n\n洗涤说明：\n🔵 建议干洗\n🟢 最高洗涤温度30℃ 缓和洗涤\n🟢 不可漂白\n🟢 阴凉处平摊晾干\n🟢 熨斗底板最高温度110℃\n🟢 不可转笼干燥\n\n执行标准：GB/T 22849-2014\n安全类别：GB 18401-2010 B类\n\n━━━━━━━━━━━`,
+        '麻': `【水洗标】\n━━━━━━━━━━━\n\n面料成分：100%亚麻\n里料成分：100%亚麻\n\n洗涤说明：\n🟢 最高洗涤温度30℃ 缓和洗涤\n🟢 不可漂白\n🟢 悬挂晾干\n🟢 熨斗底板最高温度110℃\n🟢 不可干洗\n🟢 不可转笼干燥\n\n执行标准：GB/T 22849-2014\n安全类别：GB 18401-2010 B类\n\n━━━━━━━━━━━`,
+    };
+    const result = labels[fabric] || labels['混纺'];
+    document.getElementById('washResult').innerHTML = result;
+    document.getElementById('copyWash').classList.add('show');
+}
+
+// SEO Optimizer
+function genSEO() {
+    const input = document.getElementById('seoInput').value || '纯棉T恤';
+    
+    // Extract keywords
+    const words = input.replace(/[，。！？、\s]+/g, ',').split(',').filter(w => w.trim());
+    
+    const result = `🔍 SEO优化建议\n━━━━━━━━━━━━━━━\n\n📌 标题优化建议：\n${'  '}主标题：2024新款 ${words.slice(0,3).join(' ')} 潮流百搭舒适\n${'  '}副标题：高品质 ${words.slice(0,2).join(' ')} 夏季热销推荐\n\n🏷 关键词推荐：\n${'  '}核心词：${words.slice(0,2).join('、')}\n${'  '}长尾词：${words.slice(0,2).join('')}夏季、${words.slice(0,2).join('')}2024新款、${words.slice(0,1)}潮人必备\n${'  '}热搜词：${words.slice(0,1)}爆款、${words.slice(0,1)}推荐、${words.slice(0,1)}热卖\n\n📊 优化要点：\n✅ 标题40字以内，核心词前置\n✅ 价格区间建议：¥39-¥89\n✅ 主图建议：纯白背景 + 模特上身图\n✅ SKU建议：至少3个颜色、4个尺码\n✅ 详情页：至少5张实拍图 + 1张尺码表\n\n💡 转化提升：\n🔹 添加"限时优惠"标签\n🔹 设置满减活动：满2件减10元\n🔹 开通运费险，提升转化率\n🔹 设置好评返现3元`;
+    
+    document.getElementById('seoResult').innerHTML = result;
+    document.getElementById('copySEO').classList.add('show');
+}
+</script>
+</body>
+</html>

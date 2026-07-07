@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>接单服务 · 编程开发 · 文案设计</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f8fafc;min-height:100vh}
+.container{max-width:500px;margin:0 auto;padding:0 12px 40px}
+.header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;text-align:center;padding:36px 16px 28px;border-radius:0 0 24px 24px;margin:0 -12px 16px}
+.header h1{font-size:28px;font-weight:800}
+.header p{color:#a0a0b0;font-size:13px;margin-top:4px}
+.header .status{display:inline-block;padding:4px 14px;background:#22c55e;color:#fff;border-radius:20px;font-size:12px;font-weight:600;margin-top:8px}
+.service-card{background:#fff;border-radius:16px;padding:20px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center}
+.service-card .info{flex:1}
+.service-card .info h3{font-size:17px;color:#1a1a2e}
+.service-card .info p{font-size:13px;color:#888;margin-top:4px}
+.service-card .price{font-size:22px;font-weight:800;color:#c0392b;text-align:right;flex-shrink:0;margin-left:12px}
+.service-card .price span{font-size:12px;font-weight:400;color:#999}
+.pay-section{text-align:center;padding:24px 16px;margin:16px 0;background:linear-gradient(135deg,#fff6f0,#fff);border-radius:16px;border:2px solid #f0e0d8}
+.pay-section h3{font-size:20px;color:#c0392b;margin-bottom:4px}
+.pay-section .sub{color:#999;font-size:13px;margin-bottom:12px}
+.pay-section img{width:200px;height:auto;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.12);display:block;margin:0 auto;}
+.pay-section .tip{font-size:12px;color:#c0392b;margin-top:8px}
+.how-it-works{padding:20px;background:#fff;border-radius:16px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.how-it-works h3{font-size:17px;color:#1a1a2e;margin-bottom:12px}
+.how-it-works .step{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start}
+.how-it-works .step .num{width:28px;height:28px;background:#1a1a2e;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.how-it-works .step p{font-size:14px;color:#555;line-height:1.6}
+footer{text-align:center;padding:20px;color:#999;font-size:12px}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>💻 在线接单</h1>
+        <p>编程开发 · 文案设计 · AI绘图 · 数据服务</p>
+        <div class="status">🟢 接单中 · 快速交付</div>
+    </div>
+    <div class="how-it-works">
+        <h3>📋 下单流程</h3>
+        <div class="step"><div class="num">1</div><p>选择需要的服务，扫码支付对应金额</p></div>
+        <div class="step"><div class="num">2</div><p>支付后截图发到微信联系交付</p></div>
+        <div class="step"><div class="num">3</div><p>24小时内交付成品，不满意可退</p></div>
+    </div>
+    <h3 style="font-size:16px;color:#1a1a2e;margin-bottom:10px;">🔥 热门服务</h3>
+    <div class="service-card"><div class="info"><h3>🐍 Python脚本开发</h3><p>自动化脚本、数据处理、爬虫</p></div><div class="price">¥29.9 <span>起</span></div></div>
+    <div class="service-card"><div class="info"><h3>🌐 网页/小程序开发</h3><p>H5页面、工具站、落地页</p></div><div class="price">¥49.9 <span>起</span></div></div>
+    <div class="service-card"><div class="info"><h3>✍️ 商品文案优化</h3><p>标题优化、详情描述、SEO</p></div><div class="price">¥9.9 <span>起</span></div></div>
+    <div class="service-card"><div class="info"><h3>🎨 AI商品图生成</h3><p>白底图、场景图、模特上身图</p></div><div class="price">¥19.9 <span>起</span></div></div>
+    <div class="service-card"><div class="info"><h3>📊 数据采集/爬虫</h3><p>网页数据采集、竞品分析</p></div><div class="price">¥39.9 <span>起</span></div></div>
+    <div class="service-card"><div class="info"><h3>🔍 SEO优化方案</h3><p>商品SEO、关键词布局</p></div><div class="price">¥9.9 <span>起</span></div></div>
+    <div class="pay-section">
+        <h3>💳 扫码支付</h3>
+        <p class="sub">支付宝扫码付款 · 备注服务名称</p>
+        <img src="alipay_qrcode.png" alt="支付宝收款码">
+        <p class="tip">📱 付款后截图发到微信</p>
+    </div>
+    <div style="background:#fff;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);">
+        <h3 style="font-size:16px;color:#1a1a2e;margin-bottom:8px;">📲 联系方式</h3>
+        <p style="font-size:14px;color:#555;">付款后通过抖店或微信联系交付</p>
+        <p style="margin-top:10px;font-size:13px;color:#c0392b;">🛒 抖店：向往的服装</p>
+    </div>
+    <footer><p>© 2026 向往的服装 · 不满意全额退款</p></footer>
+</div>
+</body>
+</html>

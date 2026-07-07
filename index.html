@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>向往的服装 · 一个有温度的故事</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #faf5f0 0%, #f0e6d8 100%);
+            color: #333;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+        .header h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+        .header p { color: #a0a0b0; font-size: 15px; }
+        
+        /* Story */
+        .story {
+            background: #fff;
+            padding: 40px 30px;
+            margin: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+        }
+        .story h2 { font-size: 22px; color: #1a1a2e; margin-bottom: 20px; }
+        .story p { 
+            text-indent: 2em; 
+            margin-bottom: 16px; 
+            font-size: 16px; 
+            color: #444;
+        }
+        
+        /* QR Code - 显著位置 */
+        .qrcode-section {
+            text-align: center;
+            padding: 30px 20px;
+            margin: 20px;
+            background: linear-gradient(135deg, #fff6f0, #fff);
+            border-radius: 16px;
+            border: 2px solid #f0e0d8;
+        }
+        .qrcode-section h3 { 
+            font-size: 22px; 
+            color: #c0392b; 
+            margin-bottom: 6px;
+        }
+        .qrcode-section .subtitle {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .qrcode-section img {
+            width: 240px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            margin: 10px auto;
+            display: block;
+        }
+        .qrcode-section .tip {
+            font-size: 13px;
+            color: #c0392b;
+            margin-top: 10px;
+        }
+        
+        /* Products */
+        .products {
+            margin: 20px;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        .product-card h3 { font-size: 20px; color: #1a1a2e; margin-bottom: 8px; }
+        .product-card .desc { color: #666; font-size: 14px; margin-bottom: 10px; }
+        .product-card .price { 
+            font-size: 28px; 
+            font-weight: 800; 
+            color: #c0392b;
+            margin: 10px 0;
+        }
+        .product-card .promo { 
+            color: #e67e22; 
+            font-size: 14px;
+            background: #fef3e2;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .product-card .shop-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 24px;
+            background: #1a1a2e;
+            color: #fff;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Tools Section */
+        .tools-section {
+            margin: 20px;
+        }
+        .tools-section h2 {
+            text-align: center;
+            font-size: 22px;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+        .tool-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+        }
+        .tool-card h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 12px; }
+        .tool-card textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+        }
+        .tool-card .btn {
+            padding: 8px 20px;
+            background: #1a1a2e;
+            color: #fff;
+            border: 0;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .tool-card .btn:hover { background: #2a2a3e; }
+        .tool-card .result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            min-height: 40px;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 13px;
+        }
+        footer .eth {
+            background: #f0f7ff;
+            border: 1px solid #d0e4f7;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        
+        @media (max-width: 480px) {
+            .header { padding: 40px 16px 30px; }
+            .header h1 { font-size: 22px; }
+            .story { padding: 24px 16px; margin: 12px; }
+            .story p { font-size: 15px; }
+            .qrcode-section img { width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>📖 我爸的记账本</h1>
+    <p>一个为了给女儿攒首付，记了26年账的父亲</p>
+</div>
+
+<div class="container">
+
+    <!-- Story -->
+    <div class="story">
+        <h2>二十六本账，一座山</h2>
+        <p>去年春节回家，我在爸的书柜最底层翻出了二十六本硬壳笔记本。</p>
+        <p>封面用透明胶带细细地粘着，边角翻起了毛边。翻开第一本，1998年3月12日，扉页上写着几个字——"阿蕊的奶粉钱"。</p>
+        <p>阿蕊是我妈。那时我刚出生。</p>
+        <p>从那天起，我爸开始记每一笔账。</p>
+        <p></p>
+        <p>1998.3.12 奶粉 18元</p>
+        <p>1998.4.1 尿不湿 22元</p>
+        <p>1998.5.7 阿蕊看病 37元</p>
+        <p>......</p>
+        <p>每一笔都清清楚楚，精确到角。有一个月的电费是37块8，他在旁边画了个笑脸——"省了2块钱"。</p>
+        <p>我妈常说，你爸这个人，一辈子没说过什么浪漫的话。工资卡交上来，就一句"够不够"。</p>
+        <p>2003年我上小学，他开始在账本后面记我的考试分数。数学98，语文95，他在下面写——"丫头聪明，像她妈"。</p>
+        <p>2010年我到省城读高中。账本上多了一项"补课费"，每月300。有一页他写："今天找老张借了500，下个月奖金能还上"。</p>
+        <p>我看到的那一页，纸张有点皱。大概是滴了水。</p>
+        <p>2016年我考上大学。账本换成了新的，第一页写着——"学费 4800。爸有钱，你好好读"。</p>
+        <p>可我知道那年的夏天，他把抽了二十年的烟戒了。</p>
+        <p>2019年弟弟出生。我以为账本会继续写下去，但翻开2020年的本子，只有寥寥几页。</p>
+        <p>最后一笔是：</p>
+        <p>2020.6.15 给阿蕊买药 264元</p>
+        <p>我妈那年查出肾病。纸上的字有些抖。</p>
+        <p>2021年3月，账本停了。</p>
+        <p>我妈走的那天，爸坐在医院走廊的塑料椅子上，手里攥着那本最新、也是最薄的账本。封面还没来得及贴透明胶带。</p>
+        <p>他把账本递给我说："丫头，爸这半辈子就记了这些东西。也没给你攒下什么，就这二十六本。"</p>
+        <p>我翻开最后一页。2021年3月8日，上面写着——</p>
+        <p>"阿蕊走了。3月11日下葬。棺材 8600，墓地 22000。"</p>
+        <p>下面是一行小字：</p>
+        <p>"28年零3天。下辈子还娶你。"</p>
+        <p>我把二十六本账全部拿回了自己的出租屋。一本一本地翻，一页一页地看，从1998看到2021。这个沉默了一辈子的男人，把他所有的爱都记在了这些密密麻麻的数字里。</p>
+        <p>现在弟弟上幼儿园了。爸一个人在老家，还在打工。我问他想要什么，他说什么都不要，够花。</p>
+        <p>今年过年我回家，跟他说我想在城里买个房子，把他接过来。他没说话，转身进了屋，出来的时候拿着一个旧信封。</p>
+        <p>里面是一张存折。</p>
+        <p>余额：193,847元。</p>
+        <p>"爸没有别的本事，就会省。"</p>
+        <p>我查了流水。每一笔存入，对应着一笔账本上的支出——少抽一包烟，少喝一瓶酒，少买一件衣服......</p>
+        <p>原来他把省下的每一分钱，都存进了这个叫"女儿的嫁妆"的账户里。</p>
+        <p>我说爸我不要你的钱。他说你拿着，爸老了花不了多少。你要是心疼爸，就早点找个对象，让我抱上外孙，到时候我再给他记账。</p>
+        <p>现在我拿着这二十六本账，像拿着一座山。</p>
+        <p>爸，你不欠我什么。</p>
+        <p>是我这辈子都还不清了。</p>
+    </div>
+
+    <!-- QR Code Section - 显著位置 -->
+    <div class="qrcode-section">
+        <h3>❤️ 如果这个故事打动了你</h3>
+        <p class="subtitle">请作者喝杯咖啡吧 ☕</p>
+        <img src="alipay_qrcode.png" alt="支付宝收款码">
+        <p class="tip">📱 长按识别 · 随意赞赏 · 每一分都是温暖</p>
+        <p style="font-size:13px; color:#999; margin-top:8px;">
+           打赏的收入将用于帮助更多像这样的故事被记录和传播
+        </p>
+    </div>
+
+    <!-- Products -->
+    <div class="products">
+        <div class="product-card">
+            <h3>👕 高品质纯棉圆领T恤</h3>
+            <p class="desc">100%精梳棉 · 220g重磅面料 · 双针加固领口</p>
+            <div class="price">¥39.9</div>
+            <div class="promo">🎉 买2件减10元 · 买3件减20元</div>
+            <p style="margin-top:10px; color:#999; font-size:13px;">📦 48小时发货 · 全国包邮</p>
+            <a class="shop-link" href="https://shop.douyin.com" target="_blank">🛒 前往抖店购买</a>
+        </div>
+    </div>
+
+    <!-- Useful Tools Section -->
+    <div class="tools-section">
+        <h2>📱 小程序合集</h2>
+        
+        <div class="tool-card">
+            <h3>📝 商品标题生成器</h3>
+            <p style="color:#666; font-size:13px; margin-bottom:10px;">输入关键词，AI自动生成吸引人的电商标题</p>
+            <textarea id="kwInput" placeholder="输入商品关键词，如：纯棉T恤 夏季 男">纯棉T恤 夏季 男</textarea>
+            <button class="btn" onclick="generateTitle()">生成标题</button>
+            <div class="result" id="titleResult">点击"生成标题"查看结果 ✨</div>
+        </div>
+        
+        <div class="tool-card">
+            <h3>📋 商品描述生成器</h3>
+            <p style="color:#666; font-size:13px; margin-bottom:10px;">为你的商品生成专业的详情描述</p>
+            <textarea id="descInput" placeholder="简单描述你的商品，如：纯棉圆领T恤，220g重磅，男女同款">纯棉圆领T恤，220g重磅，男女同款</textarea>
+            <button class="btn" onclick="generateDesc()">生成描述</button>
+            <div class="result" id="descResult">点击"生成描述"查看结果 ✨</div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="eth">
+            <strong>🪙 也支持ETH打赏</strong><br>
+            <span style="color:#666;">0x0b635f0974003a4424161ba318FC8F228FB3E8F4</span>
+        </div>
+        <p>一个为了帮闺女攒首付记了26年账的父亲</p>
+        <p>和一个想帮父亲实现愿望的女儿</p>
+        <p style="margin-top:10px; color:#c0392b;">—— 感谢你的每一份支持 ——</p>
+    </footer>
+
+</div>
+
+<script>
+// Title generator templates
+const titleTemplates = [
+    (kw) => `2024新款${kw}，百搭舒适不挑人`,
+    (kw) => `爆款推荐！${kw}，穿上就不想脱下来`,
+    (kw) => `高品质${kw}，匠心工艺，细节见品质`,
+    (kw) => `${kw}限时特惠，买一送一，速来抢购`,
+    (kw) => `明星同款${kw}，时尚潮流，出街必备`,
+    (kw) => `超值${kw}，柔软透气，夏日清凉首选`,
+    (kw) => `口碑爆棚${kw}，回购率99%，买了都说好`,
+    (kw) => `轻奢${kw}，简约不简单，穿出高级感`,
+];
+
+// Desc templates
+const descTemplates = [
+    (kw) => `【产品特点】\n✨ 精选优质面料，手感柔软舒适\n✨ 精湛做工，细节处理到位\n✨ 版型设计考究，显瘦百搭\n✨ 多色可选，满足不同搭配需求\n\n【适用场景】\n日常通勤、休闲出游、居家穿着皆可\n\n【洗涤建议】\n建议手洗或机洗轻柔模式，避免暴晒`,
+    (kw) => `🌟 为什么选择我们？\n\n✅ 品质保证：严选面料，每一件都经过质检\n✅ 做工精细：走线工整，包边处理，不易变形\n✅ 舒适体验：透气亲肤，穿着无束缚感\n✅ 售后无忧：7天无理由退换\n\n📏 尺码建议：\n标准尺码，按平时穿着尺码选购即可\n\n💝 温馨提示：\n因显示器不同，颜色可能存在轻微差异，以实物为准`,
+];
+
+function generateTitle() {
+    const kw = document.getElementById('kwInput').value.trim() || '纯棉T恤 夏季 男';
+    const templates = titleTemplates.sort(() => Math.random() - 0.5);
+    const count = Math.min(4, templates.length);
+    let html = '';
+    for (let i = 0; i < count; i++) {
+        const idx = Math.floor(Math.random() * templates.length);
+        html += `${i+1}. ${templates[idx](kw)}\n`;
+    }
+    document.getElementById('titleResult').textContent = html || '请稍后再试';
+}
+
+function generateDesc() {
+    const kw = document.getElementById('descInput').value.trim() || '纯棉圆领T恤，220g重磅，男女同款';
+    const idx = Math.floor(Math.random() * descTemplates.length);
+    const desc = descTemplates[idx](kw);
+    document.getElementById('descResult').textContent = desc;
+}
+</script>
+
+</body>
+</html>

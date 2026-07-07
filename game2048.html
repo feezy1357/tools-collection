@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>合成2048 · 有奖挑战</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+    font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:linear-gradient(135deg,#faf8ef,#e8dcc8);
+    min-height:100vh;
+    overflow-x:hidden;
+}
+.container{max-width:480px;margin:0 auto;padding:0 12px 40px}
+.header{text-align:center;padding:24px 0 8px}
+.header h1{font-size:32px;font-weight:900;color:#776e65}
+.header .sub{font-size:13px;color:#999;margin-top:4px}
+.score-bar{
+    display:flex;justify-content:center;gap:12px;margin:12px 0;
+}
+.score-box{
+    background:#bbada0;color:#fff;border-radius:8px;padding:6px 20px;text-align:center;
+}
+.score-box .label{font-size:11px;text-transform:uppercase;opacity:.8}
+.score-box .num{font-size:22px;font-weight:800}
+.btn-row{display:flex;justify-content:center;gap:10px;margin:8px 0}
+.btn{
+    padding:10px 24px;border:0;border-radius:8px;font-size:15px;font-weight:700;
+    cursor:pointer;transition:all .15s;
+}
+.btn:active{transform:scale(.95)}
+.btn-primary{background:#8f7a66;color:#fff}
+.btn-primary:hover{background:#7a6655}
+.btn-danger{background:#e74c3c;color:#fff}
+.game-container{
+    position:relative;
+    width:100%;max-width:400px;margin:8px auto;
+    background:#bbada0;border-radius:12px;padding:8px;
+    touch-action:none;
+}
+.grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+    aspect-ratio:1;
+}
+.cell{
+    background:rgba(238,228,218,.35);border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;font-weight:800;color:#776e65;
+    transition:all .1s;
+    position:relative;
+}
+.tile{
+    position:absolute;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;z-index:10;
+    transition:top .12s ease,left .12s ease;
+    animation:appear .2s ease;
+}
+.tile-new{animation:appear .2s ease}
+.tile-merged{animation:merge .25s ease}
+@keyframes appear{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes merge{0%{transform:scale(1.2)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+/* Tile colors */
+.tile-2{background:#eee4da;color:#776e65}
+.tile-4{background:#ede0c8;color:#776e65}
+.tile-8{background:#f2b179;color:#f9f6f2}
+.tile-16{background:#f59563;color:#f9f6f2}
+.tile-32{background:#f67c5f;color:#f9f6f2}
+.tile-64{background:#f65e3b;color:#f9f6f2}
+.tile-128{background:#edcf72;color:#f9f6f2;font-size:24px}
+.tile-256{background:#edcc61;color:#f9f6f2;font-size:24px}
+.tile-512{background:#edc850;color:#f9f6f2;font-size:22px}
+.tile-1024{background:#edc53f;color:#f9f6f2;font-size:18px}
+.tile-2048{background:#edc22e;color:#f9f6f2;font-size:18px}
+.tile-super{background:#3c3a32;color:#f9f6f2;font-size:14px}
+
+/* Pay Section */
+.pay-section{
+    text-align:center;padding:20px 16px;margin:16px 0;
+    background:linear-gradient(135deg,#fff6f0,#fff);
+    border-radius:16px;border:2px solid #f0e0d8;
+}
+.pay-section h3{font-size:20px;color:#c0392b;margin-bottom:4px}
+.pay-section .sub{color:#999;font-size:13px;margin-bottom:12px}
+.pay-section img{
+    width:200px;height:auto;border-radius:12px;
+    box-shadow:0 6px 24px rgba(0,0,0,.12);
+    display:block;margin:0 auto;
+}
+.pay-section .tip{font-size:12px;color:#c0392b;margin-top:8px}
+
+/* Shop Card */
+.shop-card{
+    text-align:center;padding:20px;margin:12px 0;
+    background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,.06);
+}
+.shop-card h3{font-size:18px;color:#1a1a2e}
+.shop-card .price{font-size:24px;font-weight:800;color:#c0392b;margin:8px 0}
+.shop-card .shop-link{
+    display:inline-block;padding:8px 20px;background:#1a1a2e;color:#fff;
+    border-radius:30px;text-decoration:none;font-size:13px;font-weight:600;
+}
+footer{text-align:center;padding:20px;color:#999;font-size:12px}
+footer .eth{
+    background:#f0f7ff;border:1px solid #d0e4f7;border-radius:12px;
+    padding:14px;margin-bottom:14px;word-break:break-all;font-size:12px;
+}
+.game-overlay{
+    display:none;position:absolute;inset:0;background:rgba(238,228,218,.7);
+    z-index:100;border-radius:12px;
+    flex-direction:column;align-items:center;justify-content:center;
+}
+.game-overlay.show{display:flex}
+.game-overlay h2{font-size:36px;color:#776e65;margin-bottom:8px}
+.game-overlay p{color:#999;font-size:14px;margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🎮 合成2048</h1>
+        <p class="sub">滑动合并相同数字 · 挑战2048</p>
+    </div>
+
+    <div class="score-bar">
+        <div class="score-box"><div class="label">得分</div><div class="num" id="score">0</div></div>
+        <div class="score-box"><div class="label">最高</div><div class="num" id="best">0</div></div>
+    </div>
+
+    <div class="btn-row">
+        <button class="btn btn-primary" onclick="newGame()">🔄 新一局</button>
+        <button class="btn btn-primary" onclick="undoMove()">↩ 撤销</button>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+        <div class="grid" id="grid"></div>
+        <div class="game-overlay" id="gameOverlay">
+            <h2 id="overlayTitle">🎉 你赢了！</h2>
+            <p id="overlayMsg">继续玩还是重新开始？</p>
+            <button class="btn btn-primary" onclick="newGame()">🔄 再来一局</button>
+        </div>
+    </div>
+
+    <!-- 付费支持区 -->
+    <div class="pay-section">
+        <h3>☕ 如果玩得开心</h3>
+        <p class="sub">请作者喝杯咖啡吧</p>
+        <img src="alipay_qrcode.png" alt="支付宝收款码">
+        <p class="tip">📱 长按识别 · 随意赞赏</p>
+    </div>
+
+    <!-- 商品区 -->
+    <div class="shop-card">
+        <h3>👕 高品质纯棉圆领T恤</h3>
+        <p style="color:#666;font-size:13px;margin:6px 0;">100%精梳棉 · 220g重磅面料</p>
+        <div class="price">¥39.9</div>
+        <p style="color:#e67e22;font-size:13px;margin-bottom:10px;">买2件减10元 · 买3件减20元</p>
+        <a class="shop-link" href="https://shop.douyin.com" target="_blank">🛒 前往抖店购买</a>
+    </div>
+
+    <footer>
+        <div class="eth">
+            <strong>🪙 ETH 打赏</strong><br>
+            <span style="color:#666;">0x0b635f0974003a4424161ba318FC8F228FB3E8F4</span>
+        </div>
+        <p>© 2026 向往的服装 · 感谢支持</p>
+    </footer>
+</div>
+
+<script>
+// 2048 Game Engine
+let grid = [], score = 0, best = parseInt(localStorage.getItem('best2048') || '0');
+let history = [], tileId = 0;
+const SIZE = 4;
+
+function initGrid() {
+    grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
+    score = 0; tileId = 0; history = [];
+    addRandomTile(); addRandomTile();
+    render();
+}
+
+function addRandomTile() {
+    const empty = [];
+    for (let r = 0; r < SIZE; r++)
+        for (let c = 0; c < SIZE; c++)
+            if (!grid[r][c]) empty.push([r,c]);
+    if (!empty.length) return;
+    const [r,c] = empty[Math.floor(Math.random() * empty.length)];
+    grid[r][c] = {value: Math.random() < 0.9 ? 2 : 4, id: ++tileId, merged: false};
+}
+
+function cloneGrid(g) { return g.map(row => row.map(cell => cell ? {...cell} : null)); }
+
+function saveState() { history.push({grid: cloneGrid(grid), score}); if (history.length > 5) history.shift(); }
+
+function undoMove() {
+    if (!history.length) return;
+    const state = history.pop();
+    grid = state.grid; score = state.score;
+    document.getElementById('gameOverlay').classList.remove('show');
+    render();
+}
+
+function slideRow(row) {
+    let arr = row.filter(c => c !== null);
+    let scored = 0;
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] && arr[i+1] && arr[i].value === arr[i+1].value && !arr[i].merged && !arr[i+1].merged) {
+            arr[i] = {value: arr[i].value * 2, id: ++tileId, merged: true};
+            scored += arr[i].value;
+            arr.splice(i+1, 1);
+        }
+    }
+    while (arr.length < SIZE) arr.push(null);
+    return {row: arr, scored};
+}
+
+function moveLeft() {
+    saveState();
+    let moved = false, totalScore = 0;
+    for (let r = 0; r < SIZE; r++) {
+        const result = slideRow(grid[r]);
+        const newRow = result.row.map(c => c ? {...c, merged: false} : null);
+        if (JSON.stringify(grid[r].map(c => c?.value)) !== JSON.stringify(newRow.map(c => c?.value))) moved = true;
+        grid[r] = newRow;
+        totalScore += result.scored;
+    }
+    if (moved) {
+        score += totalScore;
+        addRandomTile();
+        render();
+        checkGameOver();
+    }
+}
+
+function moveRight() {
+    saveState();
+    let moved = false, totalScore = 0;
+    for (let r = 0; r < SIZE; r++) {
+        grid[r].reverse();
+        const result = slideRow(grid[r]);
+        const newRow = result.row.map(c => c ? {...c, merged: false} : null);
+        grid[r] = newRow;
+        grid[r].reverse();
+        const origVals = [...grid[r]].reverse().map(c => c?.value);
+        if (JSON.stringify(grid[r].map(c => c?.value)) !== JSON.stringify(origVals)) moved = true;
+        totalScore += result.scored;
+    }
+    if (moved) { score += totalScore; addRandomTile(); render(); checkGameOver(); }
+}
+
+function moveUp() {
+    saveState();
+    let moved = false, totalScore = 0;
+    for (let c = 0; c < SIZE; c++) {
+        const col = [];
+        for (let r = 0; r < SIZE; r++) col.push(grid[r][c]);
+        const result = slideRow(col);
+        const newCol = result.row.map(x => x ? {...x, merged: false} : null);
+        for (let r = 0; r < SIZE; r++) {
+            if (grid[r][c]?.value !== newCol[r]?.value) moved = true;
+            grid[r][c] = newCol[r];
+        }
+        totalScore += result.scored;
+    }
+    if (moved) { score += totalScore; addRandomTile(); render(); checkGameOver(); }
+}
+
+function moveDown() {
+    saveState();
+    let moved = false, totalScore = 0;
+    for (let c = 0; c < SIZE; c++) {
+        const col = [];
+        for (let r = SIZE-1; r >= 0; r--) col.push(grid[r][c]);
+        const result = slideRow(col);
+        const newCol = result.row.map(x => x ? {...x, merged: false} : null);
+        for (let r = SIZE-1; r >= 0; r--) {
+            const idx = SIZE-1-r;
+            if (grid[r][c]?.value !== newCol[idx]?.value) moved = true;
+            grid[r][c] = newCol[idx];
+        }
+        totalScore += result.scored;
+    }
+    if (moved) { score += totalScore; addRandomTile(); render(); checkGameOver(); }
+}
+
+function checkGameOver() {
+    const overlay = document.getElementById('gameOverlay');
+    // Check win
+    for (let r = 0; r < SIZE; r++)
+        for (let c = 0; c < SIZE; c++)
+            if (grid[r][c] && grid[r][c].value >= 2048) {
+                document.getElementById('overlayTitle').textContent = '🎉 你赢了！';
+                document.getElementById('overlayMsg').textContent = '合成2048成功！太厉害了！';
+                overlay.classList.add('show');
+                return;
+            }
+    // Check game over
+    let hasEmpty = false;
+    for (let r = 0; r < SIZE; r++)
+        for (let c = 0; c < SIZE; c++) {
+            if (!grid[r][c]) { hasEmpty = true; continue; }
+            const v = grid[r][c].value;
+            if (c+1 < SIZE && grid[r][c+1]?.value === v) return;
+            if (r+1 < SIZE && grid[r+1][c]?.value === v) return;
+        }
+    if (!hasEmpty) {
+        document.getElementById('overlayTitle').textContent = '😅 游戏结束';
+        document.getElementById('overlayMsg').textContent = `最终得分：${score}`;
+        overlay.classList.add('show');
+    }
+}
+
+function render() {
+    const gridEl = document.getElementById('grid');
+    const cellSize = ((gridEl.clientWidth || 360) - 8 * (SIZE-1)) / SIZE;
+    
+    // Clear tiles
+    gridEl.querySelectorAll('.tile').forEach(el => el.remove());
+    
+    let maxVal = 0;
+    for (let r = 0; r < SIZE; r++)
+        for (let c = 0; c < SIZE; c++)
+            if (grid[r][c]) maxVal = Math.max(maxVal, grid[r][c].value);
+    
+    for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+            const cell = gridEl.children[r * SIZE + c];
+            if (!cell) continue;
+            if (grid[r][c]) {
+                const val = grid[r][c].value;
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                const sizeClass = val <= 2048 ? `tile-${val}` : 'tile-super';
+                tile.classList.add(sizeClass);
+                tile.textContent = val;
+                const gap = 8;
+                tile.style.width = cellSize + 'px';
+                tile.style.height = cellSize + 'px';
+                tile.style.left = c * (cellSize + gap) + 'px';
+                tile.style.top = r * (cellSize + gap) + 'px';
+                tile.style.fontSize = val >= 1000 ? (val >= 10000 ? '14px' : '18px') : (val >= 128 ? '24px' : '28px');
+                gridEl.appendChild(tile);
+            }
+        }
+    }
+    
+    document.getElementById('score').textContent = score;
+    if (score > best) { best = score; localStorage.setItem('best2048', best); }
+    document.getElementById('best').textContent = best;
+}
+
+function newGame() {
+    document.getElementById('gameOverlay').classList.remove('show');
+    initGrid();
+}
+
+// Touch/Keyboard controls
+let touchStartX, touchStartY;
+document.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}, {passive: true});
+
+document.addEventListener('touchend', e => {
+    if (!touchStartX || !touchStartY) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    const absDx = Math.abs(dx), absDy = Math.abs(dy);
+    if (Math.max(absDx, absDy) < 20) return;
+    if (absDx > absDy) dx > 0 ? moveRight() : moveLeft();
+    else dy > 0 ? moveDown() : moveUp();
+}, {passive: true});
+
+document.addEventListener('keydown', e => {
+    switch(e.key) {
+        case 'ArrowLeft': e.preventDefault(); moveLeft(); break;
+        case 'ArrowRight': e.preventDefault(); moveRight(); break;
+        case 'ArrowUp': e.preventDefault(); moveUp(); break;
+        case 'ArrowDown': e.preventDefault(); moveDown(); break;
+    }
+});
+
+// Init
+initGrid();
+window.addEventListener('resize', render);
+</script>
+</body>
+</html>
